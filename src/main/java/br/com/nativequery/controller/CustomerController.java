@@ -2,11 +2,15 @@ package br.com.nativequery.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +34,13 @@ public class CustomerController {
 	
 	public CustomerController(CustomerService service) {
 		this.service = service;
+	}
+	
+	@ApiOperation(value = "Find by Customer", notes = "Method responsible for searching customer by id")
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<CustomerDTO> findByCustomer(@ApiParam(value = "Company id", required = true, example = "1") @PathVariable Integer id) {
+		CustomerDTO respDTO = service.getById(id);
+		return ResponseEntity.ok().body(respDTO);
 	}
 
 	@ApiOperation(value = "Find All Customer records", notes = "Method responsible of listing all records")
@@ -64,5 +75,19 @@ public class CustomerController {
 		   log.error(e.getMessage());
 		}
 		return ResponseEntity.badRequest().build();
+	}
+	
+	@ApiOperation(value = "Update Customer record", notes = "Method responsible of update record")
+	@PutMapping
+	public ResponseEntity<CustomerDTO> update(@ApiParam(value = "Customer", required = true) @RequestBody Customer customerReq) {
+		CustomerDTO dtoResp = this.service.update(customerReq);
+		return ResponseEntity.ok().body(dtoResp);
+	}
+	
+	@ApiOperation(value = "Delete Customer record", notes = "Method responsible of delete record")
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<String> delete(@ApiParam(value = "Customer id", required = true) @PathVariable Integer id) {
+		this.service.delete(id);
+		return ResponseEntity.ok().build();
 	}
 }

@@ -14,6 +14,16 @@
 	<name>native-query-spring</name>
 	<description>query nativa com spring boot</description>
 
+	<build>
+		<finalName>api-native-query</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -61,14 +71,4 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

@@ -1,6 +1,7 @@
 package br.com.nativequery.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,16 @@ public class CustomerService {
 	
 	public CustomerService(CustomerRepository customerRepository) {
 		this.customerRepository = customerRepository;
+	}
+	
+	public CustomerDTO getById(Integer id) {
+		CustomerDTO respDTO;
+		 Optional<Customer> customerOpt = customerRepository.findById(id);
+		 if(customerOpt.isPresent()) {
+			 Customer customer = customerOpt.get();
+			 respDTO = new CustomerDTO(customer);
+			 return respDTO;
+		 } else throw new ResourceNotFoundException("Customer not found for ID: " + id); 
 	}
 	
     public List<CustomerDetailsDTO> getCustomersAndOrderData() {
@@ -58,4 +69,23 @@ public class CustomerService {
     		return respDTO;
     	} else throw new ResourceNotFoundException("The record not saved");
     }
+    
+    public CustomerDTO update(Customer customer) {
+    	verifyIfCustomerExists(customer.getId());
+    	Customer customerResp = customerRepository.save(customer);
+    	CustomerDTO respDTO;
+    	respDTO = new CustomerDTO(customerResp);
+    	return respDTO;
+    }
+    
+    public void delete(Integer id) {
+    	verifyIfCustomerExists(id);
+    	customerRepository.deleteById(id);
+    }
+    
+    private void verifyIfCustomerExists(Integer id) {
+    	if(!customerRepository.existsById(id))
+    		throw new ResourceNotFoundException("Customer not found for ID: " + id);
+    }
+    
 }
